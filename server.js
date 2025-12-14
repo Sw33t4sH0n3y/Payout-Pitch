@@ -4,10 +4,15 @@ const express = require("express");
 const app = express();
 
 const mongoose = require("mongoose");
+const User = require("./models/user");
+const tracksController = require("./controllers/tracks.js")
+const { ROLES, PRO_OPTIONS, DAW_OPTIONS } = require('./config/constants');
 const methodOverride = require("method-override");
 const morgan = require("morgan");
 const session = require('express-session');
 const MongoStore = require("connect-mongo").default
+const path =require("path");
+
 const isSignedIn = require("./middleware/is-signed-in.js");
 const passUserToView = require("./middleware/pass-user-to-view.js");
 
@@ -36,6 +41,9 @@ mongoose.connection.on("connected", () => {
 
 // Middleware to parse URL-encoded data from forms
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+app.use('/tracks', tracksController);
+app.use(express.static(path.join(__dirname, 'public')));
 // Middleware for using HTTP verbs such as PUT or DELETE
 app.use(methodOverride("_method"));
 // Morgan for logging HTTP requests
@@ -53,22 +61,59 @@ app.use(
 );
 // Add our custom middleware right after the session middleware
 app.use(passUserToView);
+app.use((req, res, next) => {
+  res.locals.ROLES= ROLES;
+  res.locals.PRO_OPTIONS = PRO_OPTIONS;
+  res.locals.DAW_OPTIONS = DAW_OPTIONS;
+})
 
 // GET /
 app.get("/", async (req, res) => {
+  if(req.session.user) {
+    res.redirect("/tracks");
+  } else {
   res.render("index.ejs");
+  }
 });
-
-app.get("/vip-lounge",isSignedIn, (req, res) => {
-    res.send(`Welcome to the party ${req.session.user.username}.`);
-});
-
 
 // auth routes
 app.use("/auth", authController);
 
+app.get("/tracks", isSignedIn, tracksController);
 
+// Profile routes
+app.get("/profile", isSignedIn, async (req,res) => {
+    const user = await User.findById(req.session.user._id);
+    res.render("profile.ejs", { user });
+}),
 
+//PUT
+app.put("/profile", isSignedIn, async (req,res) => {
+  try {
+    const updateData = {
+      displayName: req.body.displayName,
+      roles: Array.isArray(req.body.roles) ? req.body.roles : [req.body.roles].filter(Boolean),
+      stageName: req.body.stageName || '',
+      genre: req.body.genre || '',
+      producertag: req.body.producerTag || '',
+      daw: req.body.daw || '',
+      writerPro: req.body.writerPro || '',
+      writerIpi: req.body.writerIpi || '',
+      publishingCompany: req.body. publishingCompany || '',
+      publisherPro: req.body.publisherPro || '',
+      publisherIpi: req.body.publisherIpi || '',
+    };
+    await User.findByIdAndUpdate(req.session.user._id, updateData);
+
+    //updat session
+    req.session.user.displayName = updateData.displayName;
+
+    res.redirect("/profile");
+  } catch (error) {
+    console.log(error);
+    res.redirect("/profile")  
+  }
+});
 
 
 app.listen(port, () => {

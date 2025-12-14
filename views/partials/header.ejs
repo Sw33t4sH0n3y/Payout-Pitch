@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Payout Pitch | No Shady Splits, Just Solid Ownership</title>
+  </head>
+  <body>
+    <div class="vinyl-record vinyl-1">
+        <div class="vinyl-label">
+            <div class="vinyl-center"></div>
+        </div>
+    </div>
+    <div class="vinyl record vinyl-2">
+        <div class="vinyl-label">
+            <div class="vinyl-center"></div>
+        </div>
+    </div>
+    <div class="glow-orb orb1"></div>
+    <div class="glow-orb orb2"></div>
+
+    <header class="main-header">
+      <div class="header content">
+        <a href="/" class="logo">
+
+          <span class="logo icon">📀</span>
+          <span class="logo-text">Payout Pitch</span>
+        </a>
+
+        <nav class="main-nav">
+    <% if (user) { %>
+        <a href="/tracks" class="nav-link">My Songs</a>
+        <a href="/profile" class="nav-link">Profile</a>
+        <span class="user-avatar"><%= user.displayName ? user.displayName.charAt(0).toUppercase():'U' %></span>
+        <a href="/auth/sign-out" class="btn btn secondary btn small">Sign-Out</a>
+    <% } else { %>
+          <a href="/auth/sign-in" class="nav-link">Sign-in</a>
+          <a href="auth/sign-up" class="btn btn-primary">Sign Up</a>
+          <% } %>
+          </nav>
+        </div>
+    </header>
