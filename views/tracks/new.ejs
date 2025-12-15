@@ -1,0 +1,45 @@
+<%- include('../partials/header') %>
+
+<main class="page-container">
+    <a href="/tracks" class="back-link">← Back to Tracks</a>
+
+    <div class="card-track-form-card">
+        <h1>Cue the new Track</h1>
+
+        <form action="/tracks" method="POST">
+
+            <div class="form-group">
+                <label for="title">Official Song Title</label>
+                <input type="text" id="title" name="title" required placeholder="Enter song title">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="releaseDate">Drop Date</label>
+                    <input type="date" id="releaseDate" name="releaseDate">
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Drop Status</label>
+                    <select id="status" name="status">
+                        <option value="draft">Draft</option>
+                        <option value="unreleased">Unreleased</option>
+                        <option value="released">Released</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="isrc">ISRC Code</label>
+                <input type="text" id="isrc" name="isrc" placeholder="">
+                <span class="form-hint">ISRC</span>
+            </div>
+            <div class="form-actions">
+                <a href="/tracks" class="btn btn-secondary">Abort</a>
+                <button type="submit" class="btn btn-primary">Create Song</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<%- include(..?partials/footer)
