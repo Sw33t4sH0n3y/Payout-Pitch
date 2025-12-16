@@ -42,7 +42,6 @@ mongoose.connection.on("connected", () => {
 // Middleware to parse URL-encoded data from forms
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use('/tracks', tracksController);
 app.use(express.static(path.join(__dirname, 'public')));
 // Middleware for using HTTP verbs such as PUT or DELETE
 app.use(methodOverride("_method"));
@@ -65,7 +64,8 @@ app.use((req, res, next) => {
   res.locals.ROLES= ROLES;
   res.locals.PRO_OPTIONS = PRO_OPTIONS;
   res.locals.DAW_OPTIONS = DAW_OPTIONS;
-})
+  next();
+});
 
 // GET /
 app.get("/", async (req, res) => {
@@ -78,28 +78,26 @@ app.get("/", async (req, res) => {
 
 // auth routes
 app.use("/auth", authController);
-
-app.get("/tracks", isSignedIn, tracksController);
-
+app.use('/tracks', isSignedIn, tracksController);
 // Profile routes
-app.get("/profile", isSignedIn, async (req,res) => {
+app.get("/hub", isSignedIn, async (req,res) => {
     const user = await User.findById(req.session.user._id);
-    res.render("profile.ejs", { user });
-}),
+    res.render("profile/hub.ejs", { user });
+});
 
 //PUT
-app.put("/profile", isSignedIn, async (req,res) => {
+app.put("/hub", isSignedIn, async (req,res) => {
   try {
     const updateData = {
       displayName: req.body.displayName,
       roles: Array.isArray(req.body.roles) ? req.body.roles : [req.body.roles].filter(Boolean),
       stageName: req.body.stageName || '',
       genre: req.body.genre || '',
-      producertag: req.body.producerTag || '',
+      producerTag: req.body.producerTag || '',
       daw: req.body.daw || '',
       writerPro: req.body.writerPro || '',
       writerIpi: req.body.writerIpi || '',
-      publishingCompany: req.body. publishingCompany || '',
+      publishingCompany: req.body.publishingCompany || '',
       publisherPro: req.body.publisherPro || '',
       publisherIpi: req.body.publisherIpi || '',
     };
@@ -108,10 +106,10 @@ app.put("/profile", isSignedIn, async (req,res) => {
     //updat session
     req.session.user.displayName = updateData.displayName;
 
-    res.redirect("/profile");
+    res.redirect("/hub");
   } catch (error) {
     console.log(error);
-    res.redirect("/profile")  
+    res.redirect("/hub")  
   }
 });
 

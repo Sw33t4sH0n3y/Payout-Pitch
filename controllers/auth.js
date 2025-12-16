@@ -28,9 +28,15 @@ req.body.password = hashedPassword;
 
 //creating new user
 const user = await User.create(req.body);
-res.send(`Thanks for signing up ${user.username}`);
-
-})
+req.session.user = {
+  _id: user._id,
+  username: user.username,
+  displayName: user.displayName
+};
+req.session.save(() => {
+  res.redirect('/');
+});
+});
 
 router.get("/sign-in", (req, res) => {
   res.render("auth/sign-in.ejs");
@@ -54,7 +60,9 @@ if (!validPassword) {
   return res.send("Login failed. Password doesn't match.");
 }
 req.session.user = {
-  username: user.username,
+  _id: userInDatabase._id,
+  username: userInDatabase.username,
+  displayName: userInDatabase.displayName,
 };
 req.session.save(() => {
   res.redirect("/");

@@ -11,9 +11,11 @@ const ROLES = {
         label: 'Writer',
         icon: '✍️'
     },
-    publisher: 'Publisher',
-    icon: '📄'
-};
+    publisher: {
+        label: 'Publisher',
+        icon: '📄'
+    }
+};    
 
 const PRO_OPTIONS = ['ASCAP', 'BMI', 'SESAC', 'SOCAN', 'PRS', 'GEMA', 'SACEM', 'Other'];
 

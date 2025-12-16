@@ -31,12 +31,12 @@
         <nav class="main-nav">
     <% if (user) { %>
         <a href="/tracks" class="nav-link">My Songs</a>
-        <a href="/profile" class="nav-link">Profile</a>
-        <span class="user-avatar"><%= user.displayName ? user.displayName.charAt(0).toUpperCase():'U' %></span>
+        <a href="/hub" class="nav-link">Hub</a>
+        <span class="user-avatar"><%= user.displayName ? user.displayName.charAt(0).toUpperCase():'' %></span>
         <a href="/auth/sign-out" class="btn btn secondary btn small">Sign-Out</a>
     <% } else { %>
           <a href="/auth/sign-in" class="nav-link">Sign-in</a>
-          <a href="/auth/sign-up" class="btn btn-primary">Sign Up</a>
+          <a href="/auth/sign-up" class="btn btn-primary">Sign-Up</a>
           <% } %>
           </nav>
         </div>
