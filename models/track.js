@@ -64,4 +64,4 @@ const trackSchema = new mongoose.Schema({
     timestamps: true
 });
 
-module.exports =mongoose.model('Track', trackSchema);
+module.exports = mongoose.model('Track', trackSchema);

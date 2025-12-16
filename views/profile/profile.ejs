@@ -1,4 +1,4 @@
-    <% include ('partials/header') %>
+    <%- include ('partials/header') %>
 <main class="page container">
     <div class="page-header">
         <h1>Artist Hub</h1>
@@ -8,11 +8,11 @@
         <form action="/hub?_method=PUT" method="POST">
 
             <section class="form-section">
-                <h2 class="Section heading">The Deets</h2>
+                <h2 class="section-heading">The Deets</h2>
 
                 <div class="form-group">
                     <label for="displayName">Artist Name</label>
-                    <input type="text" id="displayName" name="displayName" value="<%=user.displayName || '' %>" placeholder="name" %>">
+                    <input type="text" id="displayName" name="displayName" value="<%=user.displayName || '' %>" placeholder="name">
                 </div>
                 <div class="form-group">
                     <label>Email</label>
@@ -27,7 +27,7 @@
 
                     <div class="role-btns"><% Object.entries(ROLES).forEach(([key,role]) => { %>
                         <% const isChecked = user.roles && user.roles.includes(key); %>
-                        <label class="'role-checkbox">
+                        <label class="role-checkbox">
                             <input type="checkbox" name="roles" value="<%=key %>" <%= isChecked ? 'checked' : '' %>>
                             <span class="role-btn <%= isChecked ? 'selected' : '' %>">
                                 <%= role.icon %> <%= role.label %>
@@ -42,11 +42,11 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for ="stageName">Stage Name</label>
-                        <input type="text" id="stageName" name="stageName" value="<%= user.stageName" || '' %>">
+                        <input type="text" id="stageName" name="stageName" value="<%= user.stageName || '' %>">
                 </div>
                 <div class="form-group">
                     <label for="genre">Genre</label>
-                    <input type="text" id="genre" name="genre" value="<% user.genre || '' %>">
+                    <input type="text" id="genre" name="genre" value="<%= user.genre || '' %>">
                     </div>
                 </div>
             </div>
@@ -61,7 +61,7 @@
                 <label for="daw">DAW</label>
                 <select id="daw" name="daw">
                     <option value=""> SELECT DAW</option>
-                    <% DAW OPTIONS.forEach(d => { %>
+                    <% DAW_OPTIONS.forEach(d => { %>
                         <option value="<%= d %>" <%= user.daw === d ? 'selected' : '' %>><%= d %></option>
                         <% }) %>
                 </select>
@@ -69,7 +69,7 @@
         </div>
     </div>
 
-        <div class="role-fields role-fields-writer <% user.roles && user.roles.includes('writer') ? '' : 'hidden' %>" id="writer-fields">
+        <div class="role-fields role-fields-writer <%= user.roles && user.roles.includes('writer') ? '' : 'hidden' %>" id="writer-fields">
             <h3>✍️ Writer Info</h3>
             <div class="form-row">
                 <div class="form-group">
@@ -77,7 +77,7 @@
                     <select id="writerPro" name="writerPro">
                         <option value="">Select PRO</option>
                         <% PRO_OPTIONS.forEach(p => { %>
-                            <option value="<% p %>" <%= user.writerPro === p ? 'selected' : '' %>><% p %></option>
+                            <option value="<%= p %>" <%= user.writerPro === p ? 'selected' : '' %>><%= p %></option>
                         <% }) %>
                     </select>
                 </div>
@@ -87,7 +87,7 @@
                 </div>
             </div>
         </div>
-        <div class="role-fields role-fields-publisher <%user.roles && user.roles.includes('publisher') ? '' : 'hidden' %>" id="publisher-fields">
+        <div class="role-fields role-fields-publisher <%= user.roles && user.roles.includes('publisher') ? '' : 'hidden' %>" id="publisher-fields">
             <h3>📄 Publisher Deets</h3>
             <div class="form-group">
                 <label for="publishingCompany">Publishing Company</label>
@@ -95,7 +95,7 @@
             </div>
             <div class="form-row">
             <div class="form-group">
-                <label for="publisherPro">PublisherPro</label>
+                <label for="publisherPro">Publisher PRO</label>
                 <select id="publisherPro" name="publisherPro">
                     <option value="">Select PRO</option>
                     <% PRO_OPTIONS.forEach(p => { %>
@@ -109,14 +109,14 @@
             <input type="text" id="publisherIpi" name="publisherIpi" value="<%= user.publisherIpi || '' %>">
             </div>
           </div>
-        </div>
+
         <button type="submit" class="btn btn-primary btn-large btn-save">Save Deets</button>
         </form>
     </div>
 </main>
 <script> document.querySelectorAll('.role-checkbox input').forEach(checkbox => { checkbox.addEventListener('change', function() {
     const role = this.value;
-    const fields = document.querySelector(role + '-fields');
+    const fields = document.querySelector('.role-fields' + role);
     const btn = this.nextElementSibling;
     if (this.checked) {
         fields.classList.remove('hidden');

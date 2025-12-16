@@ -36,40 +36,66 @@ router.post('/', async (req, res) => {
 
 // GET /tracks/:id/collaborators/new
 router.get('/:id/collaborators/new', async (req, res) => {
+ try {
     const track =await Track.findById(req.params.id);
-    res.render('tracks/collaborators/new.ejs', { track });
+    res.render('tracks/collaborators/new.ejs', { track, ROLES, PRO_OPTIONS,DAW_OPTIONS });
+} catch (error) {
+    console.log(error);
+    res.redirect('/tracks/' + req.params.id);
+}
 });
 
 // POST /tracks/:id/collaborators Create
 router.post('/:id/collaborators', async (req, res) => {
-    const track = await Track.findById(req,params.id);
+ try {
+    const track = await Track.findById(req.params.id);
     track.collaborators.push(req.body);
     await track.save();
-    req.redirect('/tracks/' + req.params.id);
+    res.redirect('/tracks/' + req.params.id);
+ } catch (error) {
+    console.log(error);
+    res.redirect('/tracks/' + req.params.id);
+ }   
 });
 
 //GET /tracks/:id/collaborators/:collabId/edit Show
 router.get('/:id/collaborators/:collabId/edit', async (req, res) => {
-        const track = await Track.findById(req,params.id);
+ try {   
+        const track = await Track.findById(req.params.id);
         const collaborator = track.collaborators.id(req.params.collabId);
-        res.render('tracks/collaborators/edit.ejs', { track, collaborator });
+        res.render('tracks/collaborators/edit.ejs', { track, collaborator, ROLES, PRO_OPTIONS, DAW_OPTIONS });
+ } catch (error) {
+    console.log(error);
+    res.redirect('/tracks/' + req.params.id);
+ }       
 });
 
 //PUT /tracks/:id/collaborators/:collabId Update
 router.put('/:id/collaborators/:collabId', async (req, res) => {
-        const track = await Track.findById(req,params.id);
+ try {   
+        const track = await Track.findById(req.params.id);
         const collaborator = track.collaborators.id(req.params.collabId);
         Object.assign(collaborator, req.body);
         await track.save();
-        res.redirect('/tracks/', + req.params.id);
+        res.redirect('/tracks/' + req.params.id);
+ } catch (error) {
+    console.log(error);
+    res.redirect('/tracks/' + req.params.id);
+ }       
 });
 
 //DELETE /tracks/:id/collaborators/:collabId Delete
 router.delete('/:id/collaborators/:collabId', async (req, res) => {
-         const track = await Track.findById(req,params.id);
+ try {   
+         const track = await Track.findById(req.params.id);
         track.collaborators.pull({ _id: req.params.collabId });
-        await track.save('/tracks/' + req.params.id);
-})
+        await track.save();
+        res.redirect('/tracks/' + req.params.id);
+ } catch (error) {
+    console.log(error);
+    res.redirect('/tracks/' + req.params.id);
+ }       
+});
 //GET /tracks/:id
 router.get('/:id', async (req, res) => {
     try {
@@ -96,7 +122,7 @@ router.get('/:id/edit', async (req, res) => {
 router.put('/:id/', async (req, res) => {
     try {
         await Track.findByIdAndUpdate(req.params.id, req.body);
-        res.redirect('/tracks/', req.params.id);
+        res.redirect('/tracks/' + req.params.id);
     } catch (error) {
         console.log(error);
         res.redirect('/tracks');
