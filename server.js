@@ -70,8 +70,8 @@ app.use((req, res, next) => {
 // GET /
 app.get("/", async (req, res) => {
   if(req.session.user) {
-    res.redirect("/tracks");
-  } else {
+  //   res.redirect("/hub");
+  // } else {
   res.render("index.ejs");
   }
 });
