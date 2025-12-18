@@ -51,7 +51,7 @@ a {
 }
 
 .main-header {
-    background: linear-gradient(180deg, var(--color-bg-dark), transparent);
+    background: linear-gradient(180deg, #1a0f0a, #1a0f0a00);
     padding: 16px 24px;
     position: sticky;
     top: 0;
@@ -237,10 +237,12 @@ a {
 }
 
 .card {
-    background: rgba(0, 0, 0, 0.3);
+    background: #1a0f0a;
     border-radius: var(--radius-lg);
     padding: 24px;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 10;
 }
 
 .alert {
@@ -467,10 +469,13 @@ a {
 .auth-card {
     width: 100%;
     max-width: 400px;
-    background: rgba(0, 0, 0, 0.4);
+    background: #1a0f0a;
     border-radius: var(--radius-lg);
     padding: 32px;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    position:relative;
+    z-index: 10;
+
 }
 
 .auth-header {
@@ -514,12 +519,15 @@ a {
     gap: 24px;
     align-items: center;
     padding: 24px;
-    background: rgba(0, 0, 0, 0.3);
+    background: #1a0f0a;
     border-radius: var(--radius-lg);
     border: 1px solid rgba(255, 255, 255, 0.1);
     text-decoration: none;
     color: var(--color-text);
     transition: 0.3s ease;
+    position: relative;
+    z-index: 10;
+
 }
 
 .track-card:hover {
@@ -606,14 +614,17 @@ a {
     align-items: center;
     gap: 16px;
     padding: 16px;
-    background: rgba(0, 0, 0, 0.2);
+    background: #241510;
     border-radius: var(--radius-md);
     margin-bottom: 12px;
     border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    z-index: 10;
+
 }
 
 .owner-card {
-    background: linear-gradient(135deg, rgba(212, 168, 83, 0.1), rgba(224, 123, 57, 0.1));
+    background: linear-gradient(135deg, #2a1f10, #2a1810);
     border: 1px solid rgba(212, 168, 83, 0.3);
 }
 
@@ -678,6 +689,7 @@ a {
 
 .splits-card {
     margin-bottom: 16px;
+    background: #1a0f0a;
 }
 
 .splits-header {
@@ -1010,8 +1022,11 @@ body.light-mode {
     --color-text-dark: #2d1810;
 }
 
-body.light-mode .card {
-    background: rgba(255, 255, 255, 0.8);
+body.light-mode .card,
+body.light-mode .feature-card,
+body.light-mode .auth-card,
+body.light-mode .track-card {
+    background: #ffffff;
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
@@ -1027,9 +1042,9 @@ body.light-mode .main-header {
     background: linear-gradient(180deg, var(--color-bg-dark), transparent);
 }
 
-body.light-mode .secondary {
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(0, 0, 0, 0.15);
+body.light-mode .btn-secondary {
+    background: #f5e6d3;
+    border: 1px solid rgba(0, 0, 0, 0.1);
     color: var(--color-text);
 }
 
@@ -1046,6 +1061,13 @@ body.light-mode .nav-link {
 
 body.light-mode .nav-link:hover {
     background: rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .collab-card {
+    background: #fff8f0;
+}
+body.light-mode .owner-card {
+    background: linear-gradient(135deg, #fff8f0, #f5e6d3);
 }
 
 body::before {
@@ -1091,4 +1113,147 @@ body::before {
             transparent 2px,
             transparent 40px
         );
+}
+.speaker {
+    position: fixed;
+    width: 120px;
+    height: 200px;
+    background: linear-gradient(180deg, #1a1a1a, #0a0a0a);
+    border-radius: 12px;
+    z-index: 1;
+    opacity: 0.2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    padding: 15px 10px;
+    border: 2px solid #2a2a2a;
+    box-shadow:  
+        inset 0 2px 4px rgba(255, 255, 255, 0.1)
+        inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.speaker1 {
+    bottom: 15%;
+    right: 8%;
+}
+
+.speaker2 {
+    top: 25%;
+    left: 5%;
+    transform: scale(0.85);
+}
+
+.speaker-grill {
+    width: 50px;
+    height: 50px;
+    background:
+        radial-gradient(circle at 30% 30%, #3a3a3a, #1a1a1a),
+        repeating-radial-gradient(
+            circle at center,
+            #1a1a1a 0px,
+            #1a1a1a 2px,
+            #2a2a2a 2px,
+            #2a2a2a 4px
+        );
+    border-radius: 50%;
+    position: relative;
+    border: 3px solid #0a0a0a;
+    box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.speaker-cone {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 70%;
+    height: 70%;
+    background: radial-gradient(circle at 40% 40%, #2a2a2a, #0a0a0a);
+    border-radius: 50%;
+    border: 1px solid #3a3a3a;
+}
+
+.speaker-dome {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 30%;
+    height: 30%;
+    background: radial-gradient(circle at 30% 30%, var(--color-amber), #8a6830);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(212, 168, 83, 0.3);
+}
+
+.speaker-woofer {
+    width: 80px;
+    height:80px;
+    background:
+        radial-gradient(circle at 30% 30%, #3a3a3a, #1a1a1a),
+        repeating-radial-gradient(
+            circle at center,
+            #1a1a1a 0px,
+            #1a1a1a 3px,
+            #2a2a2a 3px,
+            #2a2a2a 6px
+        );
+    border-radius: 50%;
+    position: relative;
+    border: 4px solid #0a0a0a;
+    box-shadow:
+    inset 0 3px 6px rgba(255, 255, 255, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.woofer-cone {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 75%;
+    height: 75%;
+    background: 
+        radial-gradient(circle at 40% 40%, #2a2a2a, #0a0a0a),
+        repeating-radial-gradient(
+            circle at center,
+            transparent 0px,
+            transparent 8px,
+            rgba(255, 255, 255, 0.03),
+            rgba(255, 255, 255, 0.03)
+        );
+    border-radius: 50%;
+    box-shadow: 2px solid #3a3a3a;
+}
+.woofer-dome {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 25%;
+    height: 25%;
+    background: radial-gradient(circle at 30% 30%, var(--color-orange), #8a4520);
+    border-radius: 50%;
+    box-shadow: 0 0 15px rgba(224, 123, 57, 0.3);
+}
+
+@keyframes pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.02); }
+}
+
+.woofer-cone {
+    animation: pulse 2s ease-in-out infinate;
+}
+
+.body.light-mode .speaker {
+    opacity: 0.15;
+}
+
+@media (max-width: 768px) {
+    .speaker {
+        display: none;
+    }
 }

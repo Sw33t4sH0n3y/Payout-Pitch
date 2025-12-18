@@ -21,6 +21,28 @@
     <div class="glow-orb orb2"></div>
     <div class="audio-waves"></div>
 
+    <div class="speaker speaker1">
+      <div class="speaker-grill">
+          <div class="speaker-cone"></div>
+          <div class="speaker-dome"></div>
+      </div>
+          <div class="speaker-woofer">
+              <div class="woofer-cone"></div>
+              <div class="woofer-dome"></div>
+              </div>
+            </div>
+
+    <div class="speaker speaker2">
+      <div class="speaker-grill">
+          <div class="speaker-cone"></div>
+          <div class="speaker-dome"></div>
+      </div>
+          <div class="speaker-woofer">
+            <div class="woofer-cone"></div>
+              <div class="woofer-dome"></div>
+      </div>
+    </div>
+
     <header class="main-header">
       <div class="header-content">
         <a href="/" class="logo">
@@ -30,7 +52,7 @@
         </a>
 
 <nav class="main-nav">
-    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/Light mode"></button>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark/Light mode">🌙</button>
     <% if (typeof user !== 'undefined' && user) { %>
 
         <a href="/tracks" class="nav-link">My Songs</a>
@@ -45,3 +67,16 @@
           </nav>
         </div>
     </header>
+   <script>
+    function toggleTheme() {
+      document.body.classList.toggle('light-mode');
+      const isLight = document.body.classList.contains('light-mode');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      document.querySelector('.theme-toggle').textContent = isLight ? '☀️' : '🌙';
+    }
+
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light-mode');
+      document.querySelector('.theme-toggle').textContent = '☀️'
+    }
+   </script>

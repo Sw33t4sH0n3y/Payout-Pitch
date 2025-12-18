@@ -2,7 +2,13 @@
 
 <main class="page-container">
     <a href="/tracks" class="back-link">← Back to Songs</a>
+    <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-error"><%= error %></div>
+    <% } %>
 
+    <% if (typeof success !== 'undefined' && success) { %>
+    <% } %> 
+       
     <div class="track-header">
         <div class="track-header-info">
             <h1><%= track.title %></h1>
@@ -19,6 +25,8 @@
 
         <div class="track-actions">
             <a href="/tracks/<%= track._id%>/edit" class="btn btn-secondary">✏️ Edit</a>
+            <a href="/tracks/<%= track._id%>/pdf" class="btn btn-secondary">📄 Download PDF</a>
+
         </div>
     </div>
         <div class="track-content">
