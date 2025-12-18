@@ -4,7 +4,7 @@
     <a href="/tracks/<%= track._id %>" class="back-link">← Back to <%= track.title %></a>
 
     <div class="card collaborator-card">
-        <h1>Edit Collabs</h1>
+        <h1>Edit Collaborators</h1>
         <p class="section-description">Update info for <%= collaborator.name %></p>
 
         <form action="/tracks/<%= track._id %>/collaborators/<%= collaborator._id %>?_method=PUT" method="POST">

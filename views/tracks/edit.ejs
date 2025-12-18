@@ -1,12 +1,12 @@
 <%- include('../partials/header') %>
 
 <main class="page-container">
-    <a href="/tracks" class="back-link">← Back to Tracks</a>
+    <a href="/tracks" class="back-link">← Back to Songs</a>
 
     <div class="card track-form-card">
         <h1>Cue the new Track</h1>
 
-        <form action="/tracks/ <%= track._id %>?_method=PUT" method="POST">
+        <form action="/tracks/<%= track._id %>?_method=PUT" method="POST">
 
             <div class="form-group">
                 <label for="title">Official Song Title</label>
@@ -16,7 +16,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="releaseDate">Drop Date</label>
-                    <input type="date" id="releaseDate" name="releaseDate" value="<%= track.releaseDate || '' %>">
+                    <input type="date" id="releaseDate" name="releaseDate" value="<%= track.releaseDate ? new Date(track.releaseDate).toISOString().split('T')[0] : '' %>">
                 </div>
 
                 <div class="form-group">
@@ -35,7 +35,7 @@
                 <span class="form-hint">ISRC</span>
             </div>
             <div class="form-actions">
-                <a href="/tracks" class="btn btn-secondary">Abort</a>
+                <a href="/tracks/<%= track._id %>" class="btn btn-secondary">Abort</a>
                 <button type="submit" class="btn btn-primary">Save Changes</button>
             </div>
         </form>

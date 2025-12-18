@@ -7,9 +7,9 @@
         <div class="track-header-info">
             <h1><%= track.title %></h1>
             <div class="track-meta">
-                <span class="status-badge status-<%= track.status %>"><%= track.status %></span>
+                <span class="status-badge status-<%= track.status || 'draft' %>"><%= track.status || 'draft' %></span>
                 <% if (track.releaseDate) { %>
-                <span>📅 <%= track.releaseDate %></span>
+                <span>📅 <%= new Date(track.releaseDate).toLocaleDateString() %></span>
         <% } %>
         <% if (track.isrc) { %>
             <span>🔖 <%= track.isrc %></span>
@@ -39,10 +39,12 @@
                         </div>
                         <div class="collab-roles">
                             <% if (user.roles && user.roles.length > 0) { %>
-                            <% user.roles.forEach(role => { %>
+                                <% user.roles.forEach(role => { %>
+                                   <% if (ROLES && ROLES[role]) { %>
                             <span class="role-badge role-badge-<%= role %>">
                                 <%= ROLES[role].icon %> <%= ROLES[role].label %>
                             </span>
+                            <% } %>
                           <% }) %>
                         <% } else { %>
                             <span class="no-roles">No set roles</span>
@@ -65,11 +67,15 @@
                 <div class="collab-info">
                     <div class="collab-name"><%= collab.name %></div>
                     <div class="collab-roles">
+                        <% if (collab.roles && collab.roles.length > 0) { %>
                         <% collab.roles.forEach(role => { %>
+                            <% if (ROLES && ROLES[role]) { %>
                         <span class="role-badge role-badge-<%= role %>">
                             <%= ROLES[role].icon %> <%= ROLES[role].label %>
                         </span>
+                        <% } %>
                        <% }) %>
+                       <% } %>
                     </div>
                 </div>
             <div class="collab-actions">
@@ -91,8 +97,7 @@
         <div class="card splits-card">
         <div class="splits-header">
             <h3>🎵 Masters</h3>
-            <span class="splits-total">
-                <%= track.splits && track.splits.master ? track.splits.master.user : 100 %>%</span>
+            <span class="splits-total">Total: <span id="master-total">100</span>%</span>
         </div>
         <div class="splits-list">
             <div class="split-item">
@@ -105,10 +110,11 @@
             </div>
             <% if (track.collaborators) { %>
             <% track.collaborators.forEach(collab => { %>
-            <% const collabID = collab._id.toString(); %>
-            <% const masterPct = track.splits && track.splits.master && track.splits.master.collaborators ? (track.splits.master.collaborators.get(collabId) || 0) :0; %>
+            <% const collabId = collab._id.toString(); %>
+            <% const masterPct = track.splits && track.splits.master && track.splits.master.collaborators ? (track.splits.master.collaborators.get(collabId) || 0) : 0; %>
             <div class="split-item">
                 <div class="user-avatar split-avatar"><%= collab.name.charAt(0).toUpperCase() %></div>
+                <div class="split-name"><%= collab.name %></div>
                 <div class="split-input-group">
                     <input type="number" name="master_<%=collabId %>" value="<%= masterPct %>" min="0" max="100" class="split-input">
                     <span>%</span>
@@ -165,5 +171,28 @@
             </form>
     </div>
 </main>
+<script>
+    function updateTotals() {
+        let masterTotal = 0;
+        let publishingTotal = 0;
 
+        document.querySelectorAll('.master-input').forEach(input => {
+            masterTotal += parseInt(input.value) || 0;
+        });
+
+        document.querySelectorAll('.publishing-input').forEach(input => {
+        masterTotal += parseInt(input.value) || 0;
+        });
+
+        document.querySelector('master-total').textContent = masterTotal;
+        document.querySelector('publishig-total').textContent = publishingTotal;
+    }
+
+    document.querySelectorAll('.split-input').forEach(input => {
+        input.addEventListener('input', updateTotals);
+    });
+
+    updateTotals();
+
+</script>
 <%- include('../partials/footer') %>

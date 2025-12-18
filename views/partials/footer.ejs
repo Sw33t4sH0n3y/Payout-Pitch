@@ -1,5 +1,18 @@
    <footer class="main-footer">
     <p>🎵 Payout Pitch &copy; <%=new Date().getFullYear() %>Own Your Sound</p>
    </footer>
+   <script>
+    function toggleTheme() {
+      document.body.classList.toggle('light-mode');
+      const isLight = document.body.classList.contains('light-mode');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      document.querySelector('.theme-toggle').textContent = isLight ? '☀️' : '🌙';
+    }
+
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light-mode');
+      document.querySelector('.theme-toggle').textContent = '☀️'
+    }
+   </script>
   </body>
 </html>
