@@ -31,6 +31,7 @@ const port = process.env.PORT ? process.env.PORT : "3000";
 
 // controllers
 const authController = require("./controllers/auth.js");
+const apiController = require("./controllers/api.js");
 
 
 mongoose.connect(process.env.MONGODB_URI);
@@ -79,6 +80,7 @@ app.get("/", async (req, res) => {
 // auth routes
 app.use("/auth", authController);
 app.use('/tracks', isSignedIn, tracksController);
+app.use('/api', apiController)
 // Profile routes
 app.get("/hub", isSignedIn, async (req,res) => {
     const user = await User.findById(req.session.user._id);

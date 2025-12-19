@@ -2,11 +2,13 @@
 
 <main class="page-container">
     <a href="/tracks" class="back-link">← Back to Songs</a>
+
     <% if (typeof error !== 'undefined' && error) { %>
         <div class="alert alert-error"><%= error %></div>
     <% } %>
 
     <% if (typeof success !== 'undefined' && success) { %>
+        <div class="alert alert-success"></div><%= success %></div>
     <% } %> 
        
     <div class="track-header">
@@ -33,16 +35,17 @@
             <section class="collaborators-section">
                 <div class="section-header">
                     <h2>👥 Collaborators</h2>
-                    <a href="/tracks/<%= track._id %>/collaborators/new" class="btn btn-small btn-secondary">+ Add</a>
+                    <a href="/tracks/<%= track._id %>/collaborators" class="btn btn-small btn-secondary">+ View All</a>
+                    <a href="/tracks/<%= track._id %>/collaborators/new" class="btn btn-small btn-primary">+ Add</a>
                 </div>
               
                 <div class="collab-card owner-card">
                     <div class="collab-avatar owner-avatar">
-                        <%= user.displayName ? user.displayName.charAt(0).toUpperCase() : '' %>
+                        <%= (user.displayName || user.displayName || '').charAt(0).toUpperCase()%>
                     </div>
                     <div class="collab-info">
                         <div class="collab-name">
-                            <%= user.displayName %>
+                            <%= user.displayName || user.username %>
                             <span class="owner-badge">👑 Owner</span>
                         </div>
                         <div class="collab-roles">
@@ -61,9 +64,9 @@
                     </div>
                 </div>
 
-                <% if (! track.collaborators || track.collaborators.length === 0) { %>
+                <% if (!track.collaborators || track.collaborators.length === 0) { %>
                 <div class="empty-collabs">
-                    <p>No collaborators yet</p>
+                    <p>No collaborators</p>
                     <a href="/tracks/<%= track._id %>/collaborators/new">Add collaborator</a>
                 </div>
                <% } else { %>
@@ -88,7 +91,7 @@
                 </div>
             <div class="collab-actions">
                 <a href="/tracks/<%= track._id %>/collaborators/<%= collab._id %>/edit" class="btn-icon">✏️</a>
-                <form action="/tracks/<%= track._id %>/collaborators/<%= collab._id %>?_method=DELETE" method="POST">
+                <form action="/tracks/<%= track._id %>/collaborators/<%= collab._id %>?_method=DELETE" method="POST" class=" inline-form">
                     <button type="submit" class="btn-icon" onclick="return confirm('Remove this collaborator?')">🗑️</button>
                 </form>
             </div>
@@ -110,9 +113,9 @@
         <div class="splits-list">
             <div class="split-item">
                 <div class="user-avatar split-avatar">You</div>
-                <div class="split-name"><%= user.displayName %></div>
+                <div class="split-name"><%= user.displayName ||  user.username %></div>
                 <div class="split-input-group">
-                    <input type="number" name="masterOwner" value="<%= track.splits && track.splits.master ? track.splits.master.user : 100 %>" min="0" max="100" class="split-input">
+                    <input type="number" name="masterOwner" value="<%= track.splits && track.splits.master ? track.splits.master.owner : 100 %>" min="0" max="100" class="split-input master-input">
                     <span>%</span>
                 </div>
             </div>
@@ -136,17 +139,15 @@
     <div class="card splits-card">
         <div class="splits-header">
             <h3>📝 Publishing</h3>
-            <span class="splits-total">
-                <%= track.splits && track.splits.publishing ? track.splits.publishing.user : 100 %>%
-            </span>
+            <span class="splits-total">Total: <span id="publishing-total">100</span>%</span>
         </div>
 
         <div class="splits-list">
             <div class="split-item">
             <div class="user-avatar split-avatar">You</div>
-            <div class="split-name"><%= user.displayName %></div>
+            <div class="split-name"><%= user.displayName || user.username %></div>
             <div class="split-input-group">
-                <input type="number" name="publishingOwner" value="<%= track.splits && track.splits.publishing ? track.splits.publishing.user : 100 %>" min="0" max="100" class="split-input">
+                <input type="number" name="publishingOwner" value="<%= track.splits && track.splits.publishing ? track.splits.publishing.owner : 100 %>" min="0" max="100" class="split-input publishing-input">
                 <span>%</span>
             </div>    
         </div>
@@ -159,7 +160,7 @@
             <div class="user-avatar split-avatar"><%= collab.name.charAt(0).toUpperCase() %></div>
             <div class="split-name"><%= collab.name %></div>
             <div class="split-input-group">
-                <input type="number" name="publishing_<%= collabId %>" value="<%= publishingPct %>" min="0" max="100" class="split-input">
+                <input type="number" name="publishing_<%= collabId %>" value="<%= publishingPct %>" min="0" max="100" class="split-input publishing-input">
                 <span>%</span>
             </div>
         </div>
@@ -179,6 +180,7 @@
             </form>
     </div>
 </main>
+
 <script>
     function updateTotals() {
         let masterTotal = 0;
@@ -203,4 +205,5 @@
     updateTotals();
 
 </script>
+
 <%- include('../partials/footer') %>

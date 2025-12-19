@@ -37,10 +37,23 @@ router.post('/', async (req, res) => {
     }
 });
 
+//GET /tracks/:id/collaborators -View all
+router.get('/:id/collaborators', async (req, res) => {
+ try {
+    const track = await Track.findById(req.params.id);
+    const user = await User.findById(req.session.user._id);
+    res.render('tracks/collaborators/index.ejs', { track, user, ROLES});
+} catch (error) {
+    console.log(error);
+    res.redirect('/tracks/' + req.params.id);
+}
+});
+
+
 // GET /tracks/:id/collaborators/new
 router.get('/:id/collaborators/new', async (req, res) => {
  try {
-    const track =await Track.findById(req.params.id);
+    const track = await Track.findById(req.params.id);
     res.render('tracks/collaborators/new.ejs', { track, ROLES, PRO_OPTIONS,DAW_OPTIONS });
 } catch (error) {
     console.log(error);
@@ -195,7 +208,7 @@ router.get('/:id/pdf', async (req, res) => {
 
         let masterTotal = masterOwnerPct;
 
-        if (track.collaborators && track.collaborators.this.length > 0) {
+        if (track.collaborators && track.collaborators.length > 0) {
             track.collaborators.forEach(collab => {
                 const collabId = collab._id.toString();
                 const pct = track.splits?.master?.collaborators?.get(collabId) || 0;
@@ -216,7 +229,7 @@ router.get('/:id/pdf', async (req, res) => {
 
         let pubTotal = pubOwnerPct;
 
-        if (track.collaborators && track.collaborators,this.length > 0) {
+        if (track.collaborators && track.collaborators.length > 0) {
             track.collaborators.forEach(collab => {
                 const collabId = collab._id.toString();
                 const pct = track.splits?.publishing?.collaborators?.get(collabId) || 0;
@@ -235,12 +248,12 @@ router.get('/:id/pdf', async (req, res) => {
         doc.moveDown(1);
 
         doc.fontSize(10).font('Helvetica');
-        doc.text(`${owner.displayName || owner.username} (Owner)`);
+        doc.text(`${ user.displayName || user.username} (Owner)`);
         doc.moveDown(0.3);
         doc.text('Signature: ____________________________    Date: ______________');
         doc.moveDown(1.5);
 
-        if (track.collaborators && track.collaborators,this.length > 0) {
+        if (track.collaborators && track.collaborators.length > 0) {
             track.collaborators.forEach(collab => {
             doc.text (`${collab.name}`);
             doc.moveDown(0.3);
@@ -265,6 +278,7 @@ router.get('/:id/pdf', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const track = await Track.findById(req.params.id);
+        const user = await User.findById(req.session.user._id);
         res.render('tracks/show.ejs', { track, user, ROLES, success: req.query.success || null, error: req.query.error || null });
     } catch (error) {
         console.log(error);

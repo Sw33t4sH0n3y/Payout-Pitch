@@ -6,14 +6,49 @@
     <div class="card track-form-card">
         <h1>Cue the new Song</h1>
 
-        <form action="/tracks" method="POST">
+        <div class="track-source-toggle">
+            <button type="button" class="source-btn active" id="deezerBtn" onclick="showSource('deezer')">
+              🔎 Search Deezer  
+            </button>
+            <button type="button" class="source-btn active" id="manualBtn" onclick="showSource('manual')">
+              ✍️ Cue your own Song
+            </button>
+        </div>
 
-            <div class="form-group">
-                <label for="title">Official Song Title</label>
-                <input type="text" id="title" name="title" required placeholder="Enter song title">
+            <div id="deezerSection" class="source-section">
+                <label for="deezerSearch">🔎 Saerch Deezer</label>
+                <input type="text" id="deezerSearch" placeholder="Track it down....">
+                <span class="form-hint">Find it. We do the typing for you</span>
+            </div>
+            <div id="searchResults" class="search-results"></div>
+
+            <div id="manualSection" class="source-section hidden">
+                <div class="manual-info">
+                    <p>Build your song your way,enter the deets.</p>
+                </div>
             </div>
 
-            <div class="form-row">
+            <div class="form-divider">
+
+
+            <form action="/tracks" method="POST">
+                <div class="form-group">
+                    <label for="title">★ Song Title ★</label>
+                    <input type="text" id="title" name="title" required placeholder="Song Title">
+                </div>
+
+                <div class="form-group">
+                    <label for="title">★ Artist Name ★</label>
+                    <input type="text" id="title" name="title" required placeholder="Artist/stage name">
+                </div>
+
+                <div class="form-group">
+                    <label for="title">★ Album / Project Name ★</label>
+                    <input type="text" id="title" name="title" required placeholder="Album or single">
+                </div>
+
+                
+                <div class="form-row">
                 <div class="form-group">
                     <label for="releaseDate">Drop Date</label>
                     <input type="date" id="releaseDate" name="releaseDate">
@@ -31,9 +66,27 @@
 
             <div class="form-group">
                 <label for="isrc">ISRC Code</label>
-                <input type="text" id="isrc" name="isrc" placeholder="">
+                <input type="text" id="isrc" name="isrc" placeholder="USRC#">
                 <span class="form-hint">ISRC</span>
             </div>
+
+            <div class="form-group">
+                <label for="isrc">Genre</label>
+                <input type="text" id="genre" name="genre" placeholder="e.g., Reggae, Hip-Hop, R&B">
+            </div>
+        </div>
+        
+            <div class="form-group">
+                <label for="isrc">Notes</label>
+                <textarea id="notes" name="notes" rows="3" placeholder="More deets"></textarea>
+            </div>
+
+            <input type="hidden" id="deezerId" name="deezerId">
+            <input type="hidden" id="deezerPreview" name="deezerPreview">
+            <input type="hidden" id="deezerCover" name="deezerCover">
+            <input type="hidden" id="trackSource" name="trackSource" value="manual">
+
+
             <div class="form-actions">
                 <a href="/tracks" class="btn btn-secondary">Abort</a>
                 <button type="submit" class="btn btn-primary">Create Song</button>
@@ -41,5 +94,114 @@
         </form>
     </div>
 </main>
+
+<script>
+    function showSource(source) {
+        const deezerSection = document.querySelector('deezerSection');
+        const manualSection = document.querySelector('manualSection');
+        const deezerBtn = document.querySelector('deezerBtn');
+        const manualBtn = document.querySelector('manualBtn');
+        const trackSource = document.querySelector('trackSource');
+
+        if (source === 'deezer') {
+            deezerSection.classList.remove('hidden');
+            manualSection.classList.add('hidden');
+            deezerBtn.classList.add('active');
+            manualBtn.classList.remove('active');
+            trackSource.value ='deezer';
+        } else {
+            deezerSection.classList.remove('hidden');
+            manualSection.classList.add('hidden');
+            deezerBtn.classList.add('active');
+            manualBtn.classList.remove('active');
+            trackSource.value ='manual';
+
+            document. querySelector('deezerId').value = '';
+            document. querySelector('deezerPreview').value = '';
+            document. querySelector('deezerCover').value = '';
+        }
+
+    }
+
+    let searchTimeout;
+
+    const searchInput = document.querySelector('deezerSearch');
+    const searchResults = document.querySelector('deezerResults');
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        const query = this.value.trim();
+
+        if (query.length < 2) {
+            searchResults.innerHTML = '';
+        }
+
+        searchTimeout = setTimeout(async function() {
+            try {
+                const response = await fetch('api/deezer/search?q=' + encodeURIComponent(query));
+                const data =await response.json();
+                displayResults(data.data || []);   
+            } catch (error) {
+                console.log('Search error:', error);
+            }
+        }, 300);
+    });
+
+    function displayResults(tracks) {
+        if (tracks.length === 0) {
+            searchResults.innerHTML = '<p class="text-muted">No results found</p>';
+            return;
+        }
+
+        let html = '';
+        for (let i = 0; i < tracks.length && i < 5; i++) {
+            const track = tracks[i];
+            const coverUrl = track.album ? track.album.cover_small : '';
+            const artistName = track.artist ? track.artist.name : 'Unknown Artist';
+            const duration = formatDuration(track.duration);
+
+            html +='div class="search-result-item" data-track=\'' + JSON.stringify(track).replace(/'/g, "&#39;") + '\'>';
+            html +='<img src="' + coverUrl + '" alt="" class="result-cover">';
+            html +='<div class="result-info">';
+            html +='<div class="result-title">' + track.title + '</div>';
+            html +='<div class="result-artist">' + artistName + '</div>';
+            html +='</div>'
+            html +='<span class="result-duration">' + duration + '</span>';
+            html +='</div>'
+        }
+
+        searchResults.innerHTML = html;
+
+        document.querySelectorAll('search-result-item').forEach(function(item) {
+            item.addEventListener('click', function() {
+                const track = JSON.parse(this.getAttribute('data-track').replace(/&#39;/g, "'"));
+                selectTrack(track); 
+            });
+        });
+    }
+
+    function selectTrack(track) {
+        document.querySelector('title').value = track.title;
+        document.querySelector('artistName').value = track.artist ? track.artist.name : '';
+        document.querySelector('albumName').value = track.album ? track.album.title : '';
+
+        document.querySelector('deezerId').value = track.id;
+        document.querySelector('deezerPreview').value = track.preview || '';
+        document.querySelector('deezerCover').value = track.album ? track.album.cover_medium : '';
+        document.querySelector('trackSource').value = 'deezer';
+
+        const coverUrl = track.album ? track.album.cover_small : '';
+        const artistName = track.artist ? track.artist.name : '';
+
+        searchResults.innerHTML = '<div class="selected-track">' +'<img src="' + coverUrl + '"alt="">' + '<div>' + '<strong>' + track.title + '</strong>' + '<p class="text-muted">' + artistName + '</p>' + '</div>' +'<span class="selected-badge">✓ Selected</span>' +'</div>';
+    }
+
+    function formatDuration(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs =seconds % 60;
+        return mins + ':' + (secs < 10 ? '0' : '') + secs;
+    }
+
+</script>
 
 <%- include('../partials/footer') %>

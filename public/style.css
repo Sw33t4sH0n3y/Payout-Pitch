@@ -878,6 +878,8 @@ a {
     opacity: 0.15;
     z-index: -1;
     animation: spin 20s linear infinite;
+    pointer-events: none !important;
+
 }
 
 .vinyl-1 {
@@ -902,6 +904,8 @@ a {
     height: 35%;
     background: linear-gradient(135deg, var(--color-orange), var(--color-red));
     border-radius: 50%;
+    pointer-events: none !important;
+
 }
 
 .vinyl-center {
@@ -913,6 +917,8 @@ a {
     height: 20%;
     background: var(--color-bg-dark);
     border-radius: 50%;
+    pointer-events: none !important;
+
 }
 
 @keyframes spin {
@@ -925,6 +931,7 @@ a {
     border-radius: 50%;
     filter: blur(80px);
     z-index: -1;
+    pointer-events: none !important;
     opacity: 0.2;
 }
 
@@ -1079,6 +1086,7 @@ body::before {
     bottom: 0;
     z-index: -2;
     opacity: 0.5;
+    pointer-events: none;
     background: 
     
         repeating-linear-gradient(
@@ -1097,7 +1105,7 @@ body::before {
     bottom: 0;
     z-index: -1;
     opacity: 0.07;
-    pointer-events: none;
+    pointer-events: none !important;
     background: 
         repeating-linear-gradient(
             0deg,
@@ -1120,7 +1128,7 @@ body::before {
     height: 200px;
     background: linear-gradient(180deg, #1a1a1a, #0a0a0a);
     border-radius: 12px;
-    z-index: 1;
+    z-index: -1;
     opacity: 0.2;
     display: flex;
     flex-direction: column;
@@ -1131,6 +1139,7 @@ body::before {
     box-shadow:  
         inset 0 2px 4px rgba(255, 255, 255, 0.1)
         inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+    pointer-events: none !important;    
 }
 
 .speaker1 {
@@ -1157,6 +1166,7 @@ body::before {
             #2a2a2a 4px
         );
     border-radius: 50%;
+    pointer-events: none !important;
     position: relative;
     border: 3px solid #0a0a0a;
     box-shadow:
@@ -1174,6 +1184,8 @@ body::before {
     background: radial-gradient(circle at 40% 40%, #2a2a2a, #0a0a0a);
     border-radius: 50%;
     border: 1px solid #3a3a3a;
+    pointer-events: none !important;
+
 }
 
 .speaker-dome {
@@ -1183,6 +1195,7 @@ body::before {
     transform: translate(-50%,-50%);
     width: 30%;
     height: 30%;
+    pointer-events: none !important;
     background: radial-gradient(circle at 30% 30%, var(--color-amber), #8a6830);
     border-radius: 50%;
     box-shadow: 0 0 10px rgba(212, 168, 83, 0.3);
@@ -1201,6 +1214,7 @@ body::before {
             #2a2a2a 6px
         );
     border-radius: 50%;
+    pointer-events: none !important;
     position: relative;
     border: 4px solid #0a0a0a;
     box-shadow:
@@ -1226,6 +1240,8 @@ body::before {
         );
     border-radius: 50%;
     box-shadow: 2px solid #3a3a3a;
+    pointer-events: none !important;
+
 }
 .woofer-dome {
     position: absolute;
@@ -1236,6 +1252,7 @@ body::before {
     height: 25%;
     background: radial-gradient(circle at 30% 30%, var(--color-orange), #8a4520);
     border-radius: 50%;
+    pointer-events: none !important;
     box-shadow: 0 0 15px rgba(224, 123, 57, 0.3);
 }
 
@@ -1255,5 +1272,90 @@ body::before {
 @media (max-width: 768px) {
     .speaker {
         display: none;
+    }
+}
+.collaborators-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.collab-splits {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.split-badge {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+}
+
+.collab-email,
+.collab-pro { 
+    margin-top: 4px;
+    font-size: 0.875rem;
+}
+
+.summary-card {
+    margin-top: 24px;
+}
+
+.summary-card h3 {
+    margin-bottom: 16px;
+    color: var(--color-amber);
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.summary-item {
+    text-align: center;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.summary-label {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-bottom: 8px;
+}
+
+.summary-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.summary-value.valid {
+    color: var(--color-success);
+} 
+
+.summary-value.invalid {
+    color: var(--color-error);
+}
+
+@media (max-width: 768px) {
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .collab-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .collab-actions {
+        margin-top: 12px;
+    }
+
+    .collab-splits {
+        justify-content: center;
     }
 }
