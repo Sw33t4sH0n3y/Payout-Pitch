@@ -28,7 +28,7 @@
  |  📄 **PDF Export**  | Download professional split sheets  |
  |  🔎 **Deezer Search**  | find tracks and auto-fill details  |
  |  🌙 **Dark/Light Mode**  | easy on eyes  |
- |  🎨 ** Vinyl Record Design**  | warm colors, vinyl vibes. |
+ |  🎨 **Vinyl Record Design**  | warm colors, vinyl vibes. |
 
  ## 🛠️ Tech Stack 
 
