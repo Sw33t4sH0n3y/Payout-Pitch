@@ -8,7 +8,7 @@
     <% } %>
 
     <% if (typeof success !== 'undefined' && success) { %>
-        <div class="alert alert-success"></div><%= success %></div>
+        <div class="alert alert-success"><%= success %></div>
     <% } %> 
        
     <div class="track-header">
@@ -35,7 +35,7 @@
             <section class="collaborators-section">
                 <div class="section-header">
                     <h2>👥 Collaborators</h2>
-                    <a href="/tracks/<%= track._id %>/collaborators" class="btn btn-small btn-secondary">+ View All</a>
+                    <a href="/tracks/<%= track._id %>/collaborators" class="btn btn-small btn-secondary">View All</a>
                     <a href="/tracks/<%= track._id %>/collaborators/new" class="btn btn-small btn-primary">+ Add</a>
                 </div>
               
@@ -113,7 +113,7 @@
         <div class="splits-list">
             <div class="split-item">
                 <div class="user-avatar split-avatar">You</div>
-                <div class="split-name"><%= user.displayName ||  user.username %></div>
+                <div class="split-name"><%= user.displayName || user.username %></div>
                 <div class="split-input-group">
                     <input type="number" name="masterOwner" value="<%= track.splits && track.splits.master ? track.splits.master.owner : 100 %>" min="0" max="100" class="split-input master-input">
                     <span>%</span>
@@ -127,7 +127,7 @@
                 <div class="user-avatar split-avatar"><%= collab.name.charAt(0).toUpperCase() %></div>
                 <div class="split-name"><%= collab.name %></div>
                 <div class="split-input-group">
-                    <input type="number" name="master_<%=collabId %>" value="<%= masterPct %>" min="0" max="100" class="split-input">
+                    <input type="number" name="master_<%=collabId %>" value="<%= masterPct %>" min="0" max="100" class="split-input master-input">
                     <span>%</span>
                 </div>
             </div>
@@ -183,19 +183,21 @@
 
 <script>
     function updateTotals() {
+        if (!document.querySelector('master-total')) return;
+        
         let masterTotal = 0;
         let publishingTotal = 0;
 
-        document.querySelectorAll('.master-input').forEach(input => {
-            masterTotal += parseInt(input.value) || 0;
+        document.querySelectorAll('.master-input').forEach(function(input) {
+        masterTotal += parseInt(input.value) || 0;
         });
 
-        document.querySelectorAll('.publishing-input').forEach(input => {
+        document.querySelectorAll('.publishing-input').forEach(function(input) {
         masterTotal += parseInt(input.value) || 0;
         });
 
         document.querySelector('master-total').textContent = masterTotal;
-        document.querySelector('publishig-total').textContent = publishingTotal;
+        document.querySelector('publishing-total').textContent = publishingTotal;
     }
 
     document.querySelectorAll('.split-input').forEach(input => {

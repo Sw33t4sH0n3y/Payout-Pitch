@@ -10,57 +10,92 @@
             <button type="button" class="source-btn active" id="deezerBtn" onclick="showSource('deezer')">
               🔎 Search Deezer  
             </button>
-            <button type="button" class="source-btn active" id="manualBtn" onclick="showSource('manual')">
+            <button type="button" class="source-btn" id="manualBtn" onclick="showSource('manual')">
               ✍️ Cue your own Song
             </button>
         </div>
 
             <div id="deezerSection" class="source-section">
-                <label for="deezerSearch">🔎 Saerch Deezer</label>
-                <input type="text" id="deezerSearch" placeholder="Track it down....">
+                <form action="/api/deezer/search" method="GET" class="search-form">
+                    <div class="form-group">
+                       <label for="q">🔎 Search Deezer</label>
+                       <div class="search-input-group">
+                <input type="text" id="q" name="q" value="<%=typeof query !== 'undefined' ? query : '' %>" placeholder="Track it down....">
+                <button type="submit" class="btn btn-primary">Search</button>
+                </div>
                 <span class="form-hint">Find it. We do the typing for you</span>
             </div>
-            <div id="searchResults" class="search-results"></div>
+            </form>
 
-            <div id="manualSection" class="source-section hidden">
-                <div class="manual-info">
-                    <p>Build your song your way,enter the deets.</p>
-                </div>
+            <% if (typeof data !== 'undefined' && data && data.length > 0) { %>
+            <div class="search-results">
+                <h3>Search Results</h3>
+                <% data.forEach(function(track) { %>
+                    <div class="search-result-item" data-title="<%=track.title %>" data-artist="<%=track.artist ? track.artist.name : ''%>" data-album="<%= track.album ? track.album.title : '' %>" data-id="<%= track.id %>"
+                        data-preview="<%= track.preview || '' %>" data-cover="<%= track.album ? track.album.cover_medium : ''%>" onclick="selectTrack(this)">
+                    <% if (track.album && track.album.cover_small) { %>
+                        <img src="<%=track.album.cover_small %>" alt="" class="result-cover">
+                        <% } %>
+                        <div class="result-info">
+                            <div class="result-title"><%= track.title %></div>
+                            <div class="result-artist"><%= track.artist ? track.artist.name : 'Unknown Artist' %></div>
+                        </div>
+                        <span class="result-duration">
+                            <% if (track.duration) { %>
+                                <%= Math.floor(track.duration/60) %>:<%= (track.duration % 60).toString().padStart(2, '0') %>
+                            <% } %>
+                        </span>
+                    </div>                
+                <% }) %>
+            </div>
+        <% } else if (typeof query !== 'undefined' && query) { %>
+            <p class="text-muted">No results found for "<%= query %>"</p> 
+        <% } %>
+    </div>               
+
+    <div id="manualSection" class="source-section hidden">
+        <div class="manual-info">
+            <p>Build your song your way,enter the deets.</p>
+        </div>
+    </div>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-error"><%= error %></div>
+    <% } %>    
+
+    <hr class="form-divider">
+
+
+    <form action="/tracks" method="POST">
+            <div class="form-group">
+                <label for="title">★ Song Title ★</label>
+                <input type="text" id="title" name="title" required placeholder="Song Title">
             </div>
 
-            <div class="form-divider">
+            <div class="form-group">
+                <label for="artistName">★ Artist Name ★</label>
+                <input type="text" id="artistName" name="artistName" placeholder="Artist/stage name">
+            </div>
 
+            <div class="form-group">
+                <label for="albumName">★ Album / Project Name ★</label>
+                <input type="text" id="albumName" name="albumName" placeholder="Album or single">
+            </div>
 
-            <form action="/tracks" method="POST">
-                <div class="form-group">
-                    <label for="title">★ Song Title ★</label>
-                    <input type="text" id="title" name="title" required placeholder="Song Title">
-                </div>
+            
+            <div class="form-row">
+            <div class="form-group">
+                <label for="releaseDate">Drop Date</label>
+                <input type="date" id="releaseDate" name="releaseDate">
+            </div>
 
-                <div class="form-group">
-                    <label for="title">★ Artist Name ★</label>
-                    <input type="text" id="title" name="title" required placeholder="Artist/stage name">
-                </div>
-
-                <div class="form-group">
-                    <label for="title">★ Album / Project Name ★</label>
-                    <input type="text" id="title" name="title" required placeholder="Album or single">
-                </div>
-
-                
-                <div class="form-row">
-                <div class="form-group">
-                    <label for="releaseDate">Drop Date</label>
-                    <input type="date" id="releaseDate" name="releaseDate">
-                </div>
-
-                <div class="form-group">
-                    <label for="status">Drop Status</label>
-                    <select id="status" name="status">
-                        <option value="draft">Draft</option>
-                        <option value="unreleased">Unreleased</option>
-                        <option value="released">Released</option>
-                    </select>
+            <div class="form-group">
+                <label for="status">Drop Status</label>
+                <select id="status" name="status">
+                    <option value="draft">Draft</option>
+                    <option value="unreleased">Unreleased</option>
+                    <option value="released">Released</option>
+                </select>
                 </div>
             </div>
 
@@ -71,13 +106,13 @@
             </div>
 
             <div class="form-group">
-                <label for="isrc">Genre</label>
+                <label for="genre">Genre</label>
                 <input type="text" id="genre" name="genre" placeholder="e.g., Reggae, Hip-Hop, R&B">
             </div>
         </div>
         
             <div class="form-group">
-                <label for="isrc">Notes</label>
+                <label for="notes">Notes</label>
                 <textarea id="notes" name="notes" rows="3" placeholder="More deets"></textarea>
             </div>
 
@@ -97,111 +132,46 @@
 
 <script>
     function showSource(source) {
-        const deezerSection = document.querySelector('deezerSection');
-        const manualSection = document.querySelector('manualSection');
-        const deezerBtn = document.querySelector('deezerBtn');
-        const manualBtn = document.querySelector('manualBtn');
-        const trackSource = document.querySelector('trackSource');
+        const deezerSection = document.querySelector('#deezerSection');
+        const manualSection = document.querySelector('#manualSection');
+        const deezerBtn = document.querySelector('#deezerBtn');
+        const manualBtn = document.querySelector('#manualBtn');
+        const trackSource = document.querySelector('#trackSource');
 
         if (source === 'deezer') {
             deezerSection.classList.remove('hidden');
             manualSection.classList.add('hidden');
             deezerBtn.classList.add('active');
             manualBtn.classList.remove('active');
-            trackSource.value ='deezer';
+            trackSource.value = 'deezer';
         } else {
-            deezerSection.classList.remove('hidden');
-            manualSection.classList.add('hidden');
-            deezerBtn.classList.add('active');
-            manualBtn.classList.remove('active');
+            deezerSection.classList.add('hidden');
+            manualSection.classList.remove('hidden');
+            deezerBtn.classList.remove('active');
+            manualBtn.classList.add('active');
             trackSource.value ='manual';
 
-            document. querySelector('deezerId').value = '';
-            document. querySelector('deezerPreview').value = '';
-            document. querySelector('deezerCover').value = '';
+            document. querySelector('#deezerId').value = '';
+            document. querySelector('#deezerPreview').value = '';
+            document. querySelector('#deezerCover').value = '';
         }
 
     }
 
-    let searchTimeout;
+    function selectTrack(element) {
+        document.querySelector('#title').value = element.dataset.title;
+        document.querySelector('#artistName').value = element.dataset.artist;
+        document.querySelector('#albumName').value = element.dataset.album;
+        document.querySelector('#deezerId').value = element.dataset.id;
+        document.querySelector('#deezerPreview').value = element.dataset.preview;
+        document.querySelector('#deezerCover').value = element.dataset.cover;
+        document.querySelector('#trackSource').value = 'deezer';
 
-    const searchInput = document.querySelector('deezerSearch');
-    const searchResults = document.querySelector('deezerResults');
-
-    searchInput.addEventListener('input', function() {
-        clearTimeout(searchTimeout);
-        const query = this.value.trim();
-
-        if (query.length < 2) {
-            searchResults.innerHTML = '';
-        }
-
-        searchTimeout = setTimeout(async function() {
-            try {
-                const response = await fetch('api/deezer/search?q=' + encodeURIComponent(query));
-                const data =await response.json();
-                displayResults(data.data || []);   
-            } catch (error) {
-                console.log('Search error:', error);
-            }
-        }, 300);
+        document.querySelectorAll('.search-result-item').forEach(function(item) {
+            item.classList.remove('selected');
     });
-
-    function displayResults(tracks) {
-        if (tracks.length === 0) {
-            searchResults.innerHTML = '<p class="text-muted">No results found</p>';
-            return;
-        }
-
-        let html = '';
-        for (let i = 0; i < tracks.length && i < 5; i++) {
-            const track = tracks[i];
-            const coverUrl = track.album ? track.album.cover_small : '';
-            const artistName = track.artist ? track.artist.name : 'Unknown Artist';
-            const duration = formatDuration(track.duration);
-
-            html +='div class="search-result-item" data-track=\'' + JSON.stringify(track).replace(/'/g, "&#39;") + '\'>';
-            html +='<img src="' + coverUrl + '" alt="" class="result-cover">';
-            html +='<div class="result-info">';
-            html +='<div class="result-title">' + track.title + '</div>';
-            html +='<div class="result-artist">' + artistName + '</div>';
-            html +='</div>'
-            html +='<span class="result-duration">' + duration + '</span>';
-            html +='</div>'
-        }
-
-        searchResults.innerHTML = html;
-
-        document.querySelectorAll('search-result-item').forEach(function(item) {
-            item.addEventListener('click', function() {
-                const track = JSON.parse(this.getAttribute('data-track').replace(/&#39;/g, "'"));
-                selectTrack(track); 
-            });
-        });
-    }
-
-    function selectTrack(track) {
-        document.querySelector('title').value = track.title;
-        document.querySelector('artistName').value = track.artist ? track.artist.name : '';
-        document.querySelector('albumName').value = track.album ? track.album.title : '';
-
-        document.querySelector('deezerId').value = track.id;
-        document.querySelector('deezerPreview').value = track.preview || '';
-        document.querySelector('deezerCover').value = track.album ? track.album.cover_medium : '';
-        document.querySelector('trackSource').value = 'deezer';
-
-        const coverUrl = track.album ? track.album.cover_small : '';
-        const artistName = track.artist ? track.artist.name : '';
-
-        searchResults.innerHTML = '<div class="selected-track">' +'<img src="' + coverUrl + '"alt="">' + '<div>' + '<strong>' + track.title + '</strong>' + '<p class="text-muted">' + artistName + '</p>' + '</div>' +'<span class="selected-badge">✓ Selected</span>' +'</div>';
-    }
-
-    function formatDuration(seconds) {
-        const mins = Math.floor(seconds / 60);
-        const secs =seconds % 60;
-        return mins + ':' + (secs < 10 ? '0' : '') + secs;
-    }
-
+        element.classList.add('selected');
+}
 </script>
 
 <%- include('../partials/footer') %>

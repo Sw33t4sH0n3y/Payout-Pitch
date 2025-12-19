@@ -94,7 +94,7 @@
                     </div>
                     <div class="collab-actions">
                         <a href="/tracks/<%= track._id %>/collaborators/<%= collab._id %>/edit" class="btn btn-secondary btn-small">✏️ Edit</a>
-                        <form action="/tracks/<%= track._id %>/collaborators/<%= collab._id %>?_method=DELETE" method="POST">
+                        <form action="/tracks/<%= track._id %>/collaborators/<%= collab._id %>?_method=DELETE" method="POST" class="inline-form">
                             <button type="submit" class="btn btn-danger btn-small" onclick="return confirm('Remove <%= collab.name %>?')">🗑️</button>
                         </form>
                     </div>
@@ -108,7 +108,7 @@
         <h3>📊 Split Summary</h3>
         <div class="summary-grid">
             <div class="summary-item">
-                <span class="summary=label">Total Collabs</span>
+                <span class="summary-label">Total Collabs</span>
                 <span class="summary-value"><%= track.collaborators.length + 1 %></span>
             </div>
             <div class="summary-item">
@@ -125,14 +125,14 @@
             <div class="summary-item">
                 <span class="summary-label">📝 Publishing Total</span>
                 <% let pubTotal = track.splits && track.splits.publishing ? track.splits.publishing.owner : 100; 
-                if (track.collaborators && track.splits && track.splits.publishing && track.splits.publishing.collaborators) { trac.collaborators.forEach(c => { pubTotal += track.splits.publishing.collaborators.get(c._id.toString()) || 0;
+                if (track.collaborators && track.splits && track.splits.publishing && track.splits.publishing.collaborators) { track.collaborators.forEach(c => { pubTotal += track.splits.publishing.collaborators.get(c._id.toString()) || 0;
                 });
              } 
         %>
         <span class="summary-value <%= pubTotal === 100 ? 'valid' : 'invalid' %>"><%= pubTotal %>%</span>
         </div>
     </div>
-    <% if (masterTotal !== 100 || pubTotal === 100) { %>
+    <% if (masterTotal !== 100 || pubTotal !== 100) { %>
         <div class="alert alert-error"> 
         ⚠️🚨 Splits must equal 100%. <a href="/tracks/<%= track._id %>">Edit splits</a>
     </div>

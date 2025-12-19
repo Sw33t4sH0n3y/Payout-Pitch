@@ -13,11 +13,11 @@ async function searchTracks(query, limit) {
         if (results.data) {
             return results.data;
         } else {
-            return[];
+            return [];
         }
         } catch (error) {
             console.log('Deezer track error:', error);
-            return null
+            return null;
         }
     }
 
@@ -33,7 +33,7 @@ async function searchTracks(query, limit) {
     }
 
     // GET artist by ID
-    async function searchArtists(query, limit) {
+    async function getArtist(artistId) {
         try {
             const artist = await deezer.artist(artistId);
             return artist;
@@ -43,7 +43,7 @@ async function searchTracks(query, limit) {
         }   
     }
 
-    async function searchArtist(query, limit) {
+    async function searchArtists(query, limit) {
         if (limit === undefined) {
         limit = 10;
     }
@@ -67,6 +67,6 @@ async function searchTracks(query, limit) {
 module.exports = {
     searchTracks: searchTracks,
     getTrack: getTrack,
-    getArtist: this.getArtist,
+    getArtist: getArtist,
     searchArtists: searchArtists
 };
