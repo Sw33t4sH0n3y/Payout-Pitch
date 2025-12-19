@@ -3,7 +3,7 @@
 [payout pitch](https://github.com/Sw33t4sH0n3y/Payout-Pitch.git)
 
 **No Shady Splits. Just Solid Ownership.**
- A split sheet management app for musicians, producers, and songwiters who want to protect their work *befor* the check clears.
+ A split sheet management app for musicians, producers, and songwiters who want to protect their work *before* the check clears.
 
 
  ## 🎯 The Problem
