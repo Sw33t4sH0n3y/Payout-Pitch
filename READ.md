@@ -48,16 +48,6 @@
  | Producer | 🎛️ |
  | Writer | ✍️ |
  | Publisher | 📄 |
-
- ## 📸 Screenshoots
-
-![Payout Pitch](/Users/amidorsey/Desktop/Screenshot 2025-12-19 at 2.02.54 AM.png)
-
-![Payout Pitch](/Users/amidorsey/Desktop/Screenshot 2025-12-19 at 2.02.54 AM.png)
-
-![Payout Pitch](/Users/amidorsey/Desktop/Screenshot 2025-12-19 at 2.05.39 AM.png)
-
-![Payout Pitch](/Users/amidorsey/Desktop/Screenshot 2025-12-19 at 2.06.40 AM.png)
  
 ## 📍 Roadmap
 
