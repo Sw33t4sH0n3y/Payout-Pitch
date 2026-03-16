@@ -1,0 +1,29 @@
+<%- include('../partials/header') %>
+
+<main class="page-container">
+    <div class="card agreed-card">
+        <div class="agreed-content">
+            <div class="agreed-icon">✅</div>
+            <h1>Agreement Confirmed!</h1>
+            <p>Thanks, <strong><%= collaborator.name %></strong>!</p>
+            <p class="text-muted">You've agreed to your splits for "<%= track.title %>"</p>
+            
+            <div class="agreed-details">
+                <p><strong>Agreed on:</strong> <%= new Date(collaborator.agreedAt).toLocaleString() %></p>
+            </div>
+            
+            <% if (track.allAgreed) { %>
+                <div class="all-agreed-notice">
+                    <h3>🎉 All Parties Have Agreed!</h3>
+                    <p>This split sheet is now locked and finalized.</p>
+                </div>
+            <% } else { %>
+                <div class="waiting-notice">
+                    <p>Waiting for other collaborators to agree...</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</main>
+
+<%- include('../partials/footer') %>

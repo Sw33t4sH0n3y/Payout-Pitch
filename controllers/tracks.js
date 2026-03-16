@@ -5,6 +5,36 @@ const User = require('../models/user');
 const { ROLES, PRO_OPTIONS, DAW_OPTIONS} = require('../config/constants');
 const PDFDocument = require('pdfkit');
 
+// // TEMPORARY: Clean up corrupted collaborators
+// router.get('/cleanup/:id', async (req, res) => {
+//     try {
+//         // Use native MongoDB to bypass Mongoose validation
+//         const mongoose = require('mongoose');
+//         const result = await mongoose.connection.db.collection('tracks').updateOne(
+//             { _id: new mongoose.Types.ObjectId(req.params.id) },
+//             { $set: { collaborators: [] } }
+//         );
+//         console.log('Cleanup result:', result);
+//         res.send('Collaborators cleared! <a href="/tracks/' + req.params.id + '">Go back</a>');
+//     } catch (error) {
+//         console.log(error);
+//         res.send('Error: ' + error.message);
+//     }
+// });
+
+// // TEMPORARY: Show collaborator tokens
+// router.get('/tokens/:id', async (req, res) => {
+//     try {
+//         const track = await Track.findById(req.params.id);
+//         let html = '<h1>Collaborator Tokens</h1>';
+//         track.collaborators.forEach(c => {
+//             html += `<p><strong>${c.name}</strong>: <a href="/tracks/agree/${c.inviteToken}">${c.inviteToken}</a></p>`;
+//         });
+//         res.send(html);
+//     } catch (error) {
+//         res.send('Error: ' + error.message);
+//     }
+// });
 
 // GET /tracks
 router.get('/', async (req, res) => {
@@ -34,6 +64,100 @@ router.post('/', async (req, res) => {
     }catch (error) {
         console.log(error);
         res.redirect('/tracks/new');
+    }
+});
+
+// GET /tracks/agree/:token - Collaborator views their split sheet
+router.get('/agree/:token', async (req, res) => {
+    try {
+        // Find track with this collaborator token
+        const track = await Track.findOne({
+            'collaborators.inviteToken': req.params.token
+        });
+        
+        if (!track) {
+            return res.status(404).render('error.ejs', { 
+                message: 'Invalid or expired link' 
+            });
+        }
+        
+        // Find the specific collaborator
+        const collaborator = track.collaborators.find(
+            c => c.inviteToken === req.params.token
+        );
+        
+        // Mark as viewed if first time
+        if (collaborator.status === 'pending') {
+            collaborator.status = 'viewed';
+            collaborator.viewedAt = new Date();
+            await track.save();
+        }
+        
+        const owner = await User.findById(track.owner);
+        
+        res.render('tracks/agree.ejs', { 
+            track, 
+            owner, 
+            collaborator,
+            token: req.params.token,
+            ROLES 
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).render('error.ejs', { 
+            message: 'Something went wrong' 
+        });
+    }
+});
+
+// POST /tracks/agree/:token - Collaborator agrees to splits
+router.post('/agree/:token', async (req, res) => {
+    try {
+        const track = await Track.findOne({
+            'collaborators.inviteToken': req.params.token
+        });
+        
+        if (!track) {
+            return res.status(404).render('error.ejs', { 
+                message: 'Invalid or expired link' 
+            });
+        }
+        
+        if (track.isLocked) {
+            return res.status(400).render('error.ejs', { 
+                message: 'This split sheet is already locked' 
+            });
+        }
+        
+        // Find and update the collaborator
+        const collaborator = track.collaborators.find(
+            c => c.inviteToken === req.params.token
+        );
+        
+        collaborator.status = 'agreed';
+        collaborator.agreedAt = new Date();
+        collaborator.agreedFromIP = req.ip || req.connection.remoteAddress;
+        
+        // Check if all collaborators have agreed
+        const allAgreed = track.collaborators.every(c => c.status === 'agreed');
+        
+        if (allAgreed) {
+            track.allAgreed = true;
+            track.isLocked = true;
+            track.lockedAt = new Date();
+        }
+        
+        await track.save();
+        
+        res.render('tracks/agreed.ejs', { 
+            track, 
+            collaborator 
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).render('error.ejs', { 
+            message: 'Something went wrong' 
+        });
     }
 });
 
@@ -78,15 +202,42 @@ router.get('/:id/collaborators/new', async (req, res) => {
 
 // POST /tracks/:id/collaborators Create
 router.post('/:id/collaborators', async (req, res) => {
- try {
-    const track = await Track.findById(req.params.id);
-    track.collaborators.push(req.body);
-    await track.save();
-    res.redirect('/tracks/' + req.params.id);
- } catch (error) {
-    console.log(error);
-    res.redirect('/tracks/' + req.params.id);
- }   
+    try {
+        const track = await Track.findById(req.params.id);
+        
+        // Extract roles properly
+        let roles = [];
+        if (req.body.roles) {
+            if (Array.isArray(req.body.roles)) {
+                roles = req.body.roles.filter(r => typeof r === 'string');
+            } else if (typeof req.body.roles === 'string') {
+                roles = [req.body.roles];
+            }
+        }
+        
+        const collaboratorData = {
+            name: req.body.name,
+            email: req.body.email || '',
+            roles: roles,
+            stageName: req.body.stageName || '',
+            genre: req.body.genre || '',
+            producerTag: req.body.producerTag || '',
+            daw: req.body.daw || '',
+            writerPro: req.body.writerPro || '',
+            writerIpi: req.body.writerIpi || '',
+            publishingCompany: req.body.publishingCompany || '',
+            publisherPro: req.body.publisherPro || '',
+            publisherIpi: req.body.publisherIpi || ''
+        };
+        
+        track.collaborators.push(collaboratorData);
+        await track.save();
+        
+        res.redirect('/tracks/' + req.params.id);
+    } catch (error) {
+        console.log(error);
+        res.redirect('/tracks/' + req.params.id);
+    }   
 });
 
 //GET /tracks/:id/collaborators/:collabId/edit Show
@@ -240,7 +391,7 @@ router.get('/:id/pdf', async (req, res) => {
 
         const pubOwnerPct = track.splits?.publishing?.owner ?? 100;
         doc.fontSize(11).font('Helvetica');
-        doc.text(`${owner.displayName || owner.username} (Owner): ${pubOwnerPct}%`);
+        doc.text(`${user.displayName || user.username} (Owner): ${pubOwnerPct}%`);
 
         let pubTotal = pubOwnerPct;
 
