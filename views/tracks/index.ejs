@@ -25,6 +25,13 @@
 
                         <div class="track-info">
                             <h3 class="track-title"><%= track.title %></h3>
+                            <div class="track-artists">
+                            <% if (track.artists && track.artists.length > 0) { %>
+                                <% track.artists.forEach(function(artist, index) { %>
+                                    <%= artist.name %><% if (artist.role === 'featured') { %> (ft.)<% } %><% if (index < track.artists.length - 1) { %>, <% } %>
+                                <% }) %>
+                            <% } %>
+                        </div>
                             <div class="track-meta">
                                 <span class="status-badge status-<%= track.status %>">
                                     <%= track.status %>

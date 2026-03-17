@@ -6,6 +6,17 @@ const trackSchema = new mongoose.Schema({
         type: String,
         default: '',
     },
+    artists: [{
+    name: {
+        type: String,
+        default: ''
+    },
+    role: {
+        type: String,
+        enum: ['primary', 'featured', 'remix', 'producer'],
+        default: 'primary'
+    }
+}],
     releaseDate: {
         type: String,
         default: '',
@@ -94,7 +105,28 @@ const trackSchema = new mongoose.Schema({
     allAgreed: {
         type: Boolean,
         default: false
-     }
+    },
+soundcloudId: {
+    type: String,
+    default: ''
+},
+soundcloudUrl: {
+    type: String,
+    default: ''
+},
+soundcloudArtwork: {
+    type: String,
+    default: ''
+},
+soundcloudPlays: {
+    type: Number,
+    default: 0
+},
+trackSource: {
+    type: String,
+    enum: ['manual', 'soundcloud', 'deezer'],
+    default: 'manual'
+}
  }, { 
     timestamps: true
 });
