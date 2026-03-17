@@ -1955,3 +1955,384 @@ body.light-mode .search-result-item:hover {
     color: var(--color-text-muted);
     margin-bottom: 24px;
 }
+
+/* ==========================================
+   PASSWORD TOGGLE
+   ========================================== */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    flex: 1;
+    padding-right: 50px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 4px;
+    opacity: 0.7;
+}
+
+.toggle-password:hover {
+    opacity: 1;
+}
+
+.forgot-link {
+    color: var(--color-amber);
+    font-size: 0.875rem;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+/* Invite Email */
+.invite-email-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.sent-info {
+    font-size: 0.75rem;
+    color: var(--color-success);
+}
+
+.no-email-warning {
+    font-size: 0.75rem;
+    color: var(--color-warning);
+    margin-top: 8px;
+}
+
+.no-email-warning a {
+    color: var(--color-amber);
+}
+/* ==========================================
+   E-SIGNATURES
+   ========================================== */
+.signature-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.sig-btn {
+    flex: 1;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.sig-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sig-btn.active {
+    background: rgba(212, 168, 83, 0.2);
+    border-color: var(--color-amber);
+    color: var(--color-text);
+}
+
+.signature-section {
+    margin-bottom: 20px;
+}
+
+.signature-section label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--color-text-muted);
+}
+
+.canvas-wrapper {
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+
+#signatureCanvas {
+    display: block;
+    width: 100%;
+    max-width: 500px;
+    height: 150px;
+    cursor: crosshair;
+    touch-action: none;
+}
+
+.signature-input {
+    width: 100%;
+    padding: 16px;
+    font-size: 1.5rem;
+    font-style: italic;
+    font-family: 'Brush Script MT', cursive;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-sm);
+    color: var(--color-amber);
+    text-align: center;
+}
+
+.signature-input:focus {
+    outline: none;
+    border-color: var(--color-amber);
+}
+
+.typed-preview {
+    margin-top: 12px;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-md);
+    text-align: center;
+}
+
+.typed-preview p {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-bottom: 8px;
+}
+
+.signature-text {
+    font-family: 'Brush Script MT', cursive;
+    font-size: 2.5rem;
+    font-style: italic;
+    color: var(--color-amber);
+    min-height: 60px;
+}
+
+.signature-display {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.signature-display p {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-bottom: 8px;
+}
+
+.signature-image {
+    max-width: 300px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+    #signatureCanvas {
+        height: 120px;
+    }
+    
+    .signature-text {
+        font-size: 1.8rem;
+    }
+}
+
+/* Signature in collaborator cards */
+.collab-signature {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.collab-signature label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-bottom: 8px;
+}
+
+.signature-thumbnail {
+    max-width: 200px;
+    max-height: 60px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.signature-meta {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+}
+
+/* ==========================================
+   REVENUE CALCULATOR
+   ========================================== */
+.revenue-card {
+    max-width: 700px;
+}
+
+.revenue-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.revenue-header h1 {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+.calculator-section {
+    margin-bottom: 24px;
+}
+
+.revenue-input,
+.revenue-select {
+    width: 100%;
+    padding: 16px;
+    font-size: 1.25rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+}
+
+.revenue-input:focus,
+.revenue-select:focus {
+    outline: none;
+    border-color: var(--color-amber);
+}
+
+.revenue-select option {
+    background: var(--color-bg);
+    color: var(--color-text);
+}
+
+.results-section {
+    margin-bottom: 24px;
+}
+
+.total-revenue {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    background: linear-gradient(135deg, rgba(212, 168, 83, 0.2), rgba(224, 123, 57, 0.2));
+    border: 2px solid var(--color-amber);
+    border-radius: var(--radius-md);
+    margin-bottom: 24px;
+}
+
+.total-label {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.total-amount {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-amber);
+}
+
+.revenue-breakdown h3 {
+    margin-bottom: 16px;
+}
+
+.breakdown-section {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.breakdown-section h4 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.breakdown-item:last-child {
+    border-bottom: none;
+}
+
+.breakdown-person {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.person-name {
+    font-weight: 500;
+}
+
+.person-pct {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+.breakdown-amount {
+    font-weight: 600;
+    color: var(--color-success);
+}
+
+.revenue-note {
+    padding: 12px;
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    color: var(--color-warning);
+}
+
+.scenarios-section h3 {
+    margin-bottom: 12px;
+}
+
+.scenario-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.scenario-buttons .btn {
+    flex: 1;
+    min-width: 100px;
+}
+
+@media (max-width: 768px) {
+    .total-revenue {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
+    
+    .total-amount {
+        font-size: 2rem;
+    }
+    
+    .scenario-buttons {
+        flex-direction: column;
+    }
+    
+    .scenario-buttons .btn {
+        width: 100%;
+    }
+}

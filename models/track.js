@@ -50,7 +50,17 @@ const trackSchema = new mongoose.Schema({
         },
         viewedAt: Date,
         agreedAt: Date,
-        agreedFromIP: String    
+        agreedFromIP: String,
+        inviteSentAt: Date,
+        signature: {
+            type: String,
+            default: null
+        },
+        signatureType: {
+            type: String,
+            enum: ['draw', 'type', null],
+            default: null
+        }    
     }],
     splits: {
         master: {
@@ -75,6 +85,10 @@ const trackSchema = new mongoose.Schema({
             default: {}
            }
         }
+    },
+    isLocked: {
+        type: Boolean,
+        default: false
     },
     isLockedAt: Date,
     allAgreed: {

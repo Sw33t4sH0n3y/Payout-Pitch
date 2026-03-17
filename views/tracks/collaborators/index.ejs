@@ -10,6 +10,14 @@
 
     <p class="page-subtitle">All credited contributors on "<%= track.title %>"</p>
 
+    <% if (typeof success !== 'undefined' && success) { %>
+    <div class="alert alert-success"><%= success %></div>
+    <% } %>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-error"><%= error %></div>
+    <% } %>
+
     <% if (track.isLocked) { %>
         <div class="locked-notice">
             🔒 This split sheet is locked. All parties have agreed.
@@ -109,35 +117,57 @@
                             </div>
                         <% } %>
 
-                        <!-- Invite Link Section -->
-                        <div class="invite-link-section">
-                            <label>🔗 Invite Link:</label>
-                            <div class="invite-link-row">
-                                <input type="text" 
-                                       class="invite-link-input" 
-                                       value="http://localhost:3000/tracks/agree/<%= collab.inviteToken %>" 
-                                       readonly 
-                                       id="link-<%= collabId %>">
-                                <button type="button" class="btn btn-small btn-secondary" onclick="copyLink('<%= collabId %>')">
-                                    📋 Copy
+                    <!-- Invite Link Section -->
+                    <div class="invite-link-section">
+                        <label>🔗 Invite Link:</label>
+                        <div class="invite-link-row">
+                            <input type="text" 
+                                    class="invite-link-input" 
+                                    value="http://localhost:3000/tracks/agree/<%= collab.inviteToken %>" 
+                                    readonly 
+                                    id="link-<%= collabId %>">
+                            <button type="button" class="btn btn-small btn-secondary" onclick="copyLink('<%= collabId %>')">
+                                📋 Copy
+                            </button>
+                        </div>                 
+                           <!-- Send Email Button -->
+                        <% if (collab.email) { %>
+                            <form action="/tracks/<%= track._id %>/collaborators/<%= collab._id %>/send-invite" method="POST" style="margin-top: 8px;">
+                                <button type="submit" class="btn btn-small btn-primary">
+                                    📧 Send Invite Email
                                 </button>
-                            </div>
-                            <% if (collab.agreedAt) { %>
-                                <p class="agreed-info">✅ Agreed on <%= new Date(collab.agreedAt).toLocaleString() %></p>
-                            <% } else if (collab.viewedAt) { %>
-                                <p class="viewed-info">👀 Viewed on <%= new Date(collab.viewedAt).toLocaleString() %></p>
-                            <% } %>
-                        </div>
+                            </form>
+                        <% } else { %>
+                            <p class="text-muted" style="font-size: 0.75rem; margin-top: 8px;">
+                                ⚠️ No email address — <a href="/tracks/<%= track._id %>/collaborators/<%= collab._id %>/edit">add one</a>
+                            </p>
+                        <% } %>
+                        <% if (collab.agreedAt) { %>
+                            <p class="agreed-info">✅ Agreed on <%= new Date(collab.agreedAt).toLocaleString() %></p>
+                        <% } else if (collab.viewedAt) { %>
+                            <p class="viewed-info">👀 Viewed on <%= new Date(collab.viewedAt).toLocaleString() %></p>
+                        <% } %>
                     </div>
-                    <div class="collab-actions">
-                        <a href="/tracks/<%= track._id %>/collaborators/<%= collab._id %>/edit" class="btn btn-secondary btn-small">✏️ Edit</a>
-                        <form action="/tracks/<%= track._id %>/collaborators/<%= collab._id %>?_method=DELETE" method="POST" class="inline-form">
-                            <button type="submit" class="btn btn-danger btn-small" onclick="return confirm('Remove <%= collab.name %>?')">🗑️</button>
-                        </form>
-                    </div>
+                <% if (collab.signature) { %>
+    <div class="collab-signature">
+        <label>✍️ Signature:</label>
+        <img src="<%= collab.signature %>" alt="<%= collab.name %>'s signature" class="signature-thumbnail">
+        <span class="signature-meta">
+            Signed <%= new Date(collab.agreedAt).toLocaleString() %>
+            via <%= collab.signatureType === 'type' ? 'typed name' : 'drawn signature' %>
+        </span>
+    </div>
+<% } %>    
                 </div>
-            <% }) %>
-        <% } %>        
+                <div class="collab-actions">
+                    <a href="/tracks/<%= track._id %>/collaborators/<%= collab._id %>/edit" class="btn btn-secondary btn-small">✏️ Edit</a>
+                    <form action="/tracks/<%= track._id %>/collaborators/<%= collab._id %>?_method=DELETE" method="POST" class="inline-form">
+                        <button type="submit" class="btn btn-danger btn-small" onclick="return confirm('Remove <%= collab.name %>?')">🗑️</button>
+                    </form>
+                </div>
+            </div>
+        <% }) %>
+    <% } %>        
     </div>
     
     <% if (track.collaborators && track.collaborators.length > 0) { %>

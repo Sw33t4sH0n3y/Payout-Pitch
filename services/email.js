@@ -16,12 +16,12 @@ async function sendInviteEmail(collaborator, track, ownerName, inviteToken) {
     const inviteUrl = `${process.env.BASE_URL || 'http://localhost:3000'}/tracks/agree/${inviteToken}`;
     
     const mailOptions = {
-        from: `"Payout Pitch" <${process.env.EMAIL_USER}>`,
+        from: `"Moolah M$x" <${process.env.EMAIL_USER}>`,
         to: collaborator.email,
         subject: `🎵 You've been added to "${track.title}" - Review your splits`,
         html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #2d1810; color: #f5e6d3; padding: 32px; border-radius: 16px;">
-                <h1 style="color: #d4a853; text-align: center;">🎵 Payout Pitch</h1>
+                <h1 style="color: #d4a853; text-align: center;">🎵 Moolah M$x</h1>
                 
                 <p>Hey <strong>${collaborator.name}</strong>,</p>
                 
@@ -47,7 +47,7 @@ async function sendInviteEmail(collaborator, track, ownerName, inviteToken) {
                 <hr style="border: none; border-top: 1px solid #3d2318; margin: 30px 0;">
                 
                 <p style="color: #b89f8a; font-size: 12px; text-align: center;">
-                    Payout Pitch — No Shady Splits, Just Solid Ownership
+                    Moolah M$x — No Shady Splits, Just Solid Ownership
                 </p>
             </div>
         `
@@ -66,7 +66,7 @@ async function sendInviteEmail(collaborator, track, ownerName, inviteToken) {
 // Send agreement confirmation
 async function sendAgreementConfirmation(collaborator, track) {
     const mailOptions = {
-        from: `"Payout Pitch" <${process.env.EMAIL_USER}>`,
+        from: `"Moolah M$x" <${process.env.EMAIL_USER}>`,
         to: collaborator.email,
         subject: `✅ Agreement Confirmed - "${track.title}"`,
         html: `
@@ -86,7 +86,7 @@ async function sendAgreementConfirmation(collaborator, track) {
                 <hr style="border: none; border-top: 1px solid #3d2318; margin: 30px 0;">
                 
                 <p style="color: #b89f8a; font-size: 12px; text-align: center;">
-                    Payout Pitch — No Shady Splits, Just Solid Ownership
+                    Moolah M$x — No Shady Splits, Just Solid Ownership
                 </p>
             </div>
         `
@@ -101,8 +101,55 @@ async function sendAgreementConfirmation(collaborator, track) {
         return { success: false, error: error.message };
     }
 }
+// Send password reset email
+async function sendPasswordResetEmail(user, resetToken) {
+    const resetUrl = `${process.env.BASE_URL || 'http://localhost:3000'}/auth/reset-password/${resetToken}`;
+    const appName = process.env.APP_NAME || 'Moolah M$x';
+    
+    const mailOptions = {
+        from: `"${appName}" <${process.env.EMAIL_USER}>`,
+        to: user.email,
+        subject: `🔐 Reset Your Password - ${appName}`,
+        html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #2d1810; color: #f5e6d3; padding: 32px; border-radius: 16px;">
+                <h1 style="color: #d4a853; text-align: center;">🔐 Password Reset</h1>
+                
+                <p>Hey <strong>${user.displayName || user.username}</strong>,</p>
+                
+                <p>You requested to reset your password. Click the button below:</p>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="${resetUrl}" style="background: linear-gradient(135deg, #d4a853, #e07b39); color: #2d1810; padding: 16px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">
+                        Reset Password
+                    </a>
+                </div>
+                
+                <p style="color: #b89f8a; font-size: 14px;">
+                    This link expires in 1 hour.<br><br>
+                    If you didn't request this, ignore this email.
+                </p>
+                
+                <hr style="border: none; border-top: 1px solid #3d2318; margin: 30px 0;">
+                
+                <p style="color: #b89f8a; font-size: 12px; text-align: center;">
+                    ${appName} — No Shady Splits, Just Solid Ownership
+                </p>
+            </div>
+        `
+    };
+    
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Reset email sent:', info.messageId);
+        return { success: true, messageId: info.messageId };
+    } catch (error) {
+        console.log('Email error:', error);
+        return { success: false, error: error.message };
+    }
+}
 
 module.exports = {
     sendInviteEmail,
-    sendAgreementConfirmation
+    sendAgreementConfirmation,
+    sendPasswordResetEmail  
 };
